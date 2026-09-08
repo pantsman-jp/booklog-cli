@@ -27,10 +27,26 @@ fn convert(record: &csv::StringRecord) -> Book {
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let mut reader = csv::Reader::from_path("loan_history.csv")?;
+    let mut args = std::env::args();
+    let filepath = match args.nth(1) {
+        Some(path) => path,
+        None => {
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::InvalidInput,
+                "Specify the path to the CSV file.",
+            )
+            .into());
+        }
+    };
+    let mut reader = csv::Reader::from_path(filepath)?;
+    let mut books: Vec<Book> = Vec::new();
     for result in reader.records() {
         let record = result?;
-        println!("{:?}", convert(&record));
+        books.push(convert(&record));
+        // println!("{:?}", convert(&record));
+    }
+    for book in books.iter().enumerate() {
+        println!("{}. {}", book.0 + 1, book.1.title);
     }
     Ok(())
 }
