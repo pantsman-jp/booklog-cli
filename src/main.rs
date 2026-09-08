@@ -38,6 +38,16 @@ fn main() -> Result<(), Box<dyn Error>> {
             .into());
         }
     };
+    let command = match args.nth(0) {
+        Some(cmd) => cmd,
+        None => {
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::InvalidInput,
+                "Specify the appropriate command.",
+            )
+            .into());
+        }
+    };
     let mut reader = csv::Reader::from_path(filepath)?;
     let mut books: Vec<Book> = Vec::new();
     for result in reader.records() {
@@ -45,8 +55,19 @@ fn main() -> Result<(), Box<dyn Error>> {
         books.push(convert(&record));
         // println!("{:?}", convert(&record));
     }
-    for book in books.iter().enumerate() {
-        println!("{}. {}", book.0 + 1, book.1.title);
+    match command.as_str() {
+        "list" => {
+            for book in books.iter().enumerate() {
+                println!("{}. {}", book.0 + 1, book.1.title);
+            }
+        }
+        _ => {
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::InvalidInput,
+                format!("Unknown command: {}", command),
+            )
+            .into());
+        }
     }
     Ok(())
 }
