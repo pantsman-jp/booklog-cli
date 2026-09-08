@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.0 (2026-09-08)
+## 0.2.0 (2026-09-08)
 
 - Added the `search` command to display borrowed book specified titles.
 
