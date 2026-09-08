@@ -61,6 +61,23 @@ fn main() -> Result<(), Box<dyn Error>> {
                 println!("{}. {}", book.0 + 1, book.1.title);
             }
         }
+        "search" => {
+            let word = match args.nth(0) {
+                Some(word) => word,
+                None => {
+                    return Err(std::io::Error::new(
+                        std::io::ErrorKind::InvalidInput,
+                        "Specify the appropriate word.",
+                    )
+                    .into());
+                }
+            };
+            for book in books.iter().enumerate() {
+                if book.1.title.contains(&word) {
+                    println!("{}. {}", book.0 + 1, book.1.title);
+                }
+            }
+        }
         _ => {
             return Err(std::io::Error::new(
                 std::io::ErrorKind::InvalidInput,

@@ -15,6 +15,9 @@
 ```zsh
 # List books
 cargo run -- <CSV file> list
+
+# Search books
+cargo run -- <CSV file> search <Word>
 ```
 
 The input CSV file is expected to have the following columns:

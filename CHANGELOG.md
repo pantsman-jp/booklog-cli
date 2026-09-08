@@ -2,7 +2,9 @@
 
 ## 0.1.0 (2026-09-08)
 
-### Added
+- Added the `search` command to display borrowed book specified titles.
+
+## 0.1.0 (2026-09-08)
 
 - Initialized the `booklog-cli` Rust project.
 - Added CSV parsing with the `csv` crate.
