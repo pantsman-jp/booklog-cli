@@ -26,6 +26,30 @@ fn convert(record: &csv::StringRecord) -> Book {
     }
 }
 
+fn load_books(filepath: &str) -> Result<Vec<Book>, Box<dyn Error>> {
+    let mut reader = csv::Reader::from_path(filepath)?;
+    let mut books: Vec<Book> = Vec::new();
+    for result in reader.records() {
+        let record = result?;
+        books.push(convert(&record));
+    }
+    Ok(books)
+}
+
+fn list_books(books: &[Book]) {
+    for book in books.iter().enumerate() {
+        println!("{}. {}", book.0 + 1, book.1.title);
+    }
+}
+
+fn search_books(books: &[Book], word: &str) {
+    for book in books.iter().enumerate() {
+        if book.1.title.contains(word) {
+            println!("{}. {}", book.0 + 1, book.1.title);
+        }
+    }
+}
+
 fn main() -> Result<(), Box<dyn Error>> {
     let mut args = std::env::args();
     let filepath = match args.nth(1) {
@@ -48,19 +72,9 @@ fn main() -> Result<(), Box<dyn Error>> {
             .into());
         }
     };
-    let mut reader = csv::Reader::from_path(filepath)?;
-    let mut books: Vec<Book> = Vec::new();
-    for result in reader.records() {
-        let record = result?;
-        books.push(convert(&record));
-        // println!("{:?}", convert(&record));
-    }
+    let books = load_books(&filepath)?;
     match command.as_str() {
-        "list" => {
-            for book in books.iter().enumerate() {
-                println!("{}. {}", book.0 + 1, book.1.title);
-            }
-        }
+        "list" => list_books(&books),
         "search" => {
             let word = match args.nth(0) {
                 Some(word) => word,
@@ -72,11 +86,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                     .into());
                 }
             };
-            for book in books.iter().enumerate() {
-                if book.1.title.contains(&word) {
-                    println!("{}. {}", book.0 + 1, book.1.title);
-                }
-            }
+            search_books(&books, &word);
         }
         _ => {
             return Err(std::io::Error::new(
